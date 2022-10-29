@@ -17,4 +17,19 @@ export class CervejaService {
     this.database.includeCerveja(cerveja);
     return cerveja;
   }
+
+  public async coletaTodasCervejas(page: number, size: number) {
+    const pagina = page || 0;
+    const tamanho = size || 10;
+    const inicio = pagina * tamanho;
+    const fim = inicio + tamanho;
+
+    const listaCervejas = await this.database.getAllCervejas();
+
+    if (listaCervejas.length <= tamanho) {
+      return listaCervejas;
+    }
+
+    return listaCervejas.slice(inicio, fim);
+  }
 }

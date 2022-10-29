@@ -1,4 +1,4 @@
-import { Body, Controller, Post, HttpStatus } from "@nestjs/common";
+import { Body, Query, Controller, Post, Get, HttpStatus } from "@nestjs/common";
 import { NestResponse } from "src/core/http/nest-response";
 import { NestResponseBuilder } from "src/core/http/nest-response-builder";
 import { Cerveja } from "./cerveja.entity";
@@ -19,5 +19,13 @@ export class CervejaController {
       .withHeaders({ Location: `/cervejas/${cervejaCriada.nome}` })
       .withBody(cervejaCriada)
       .build();
+  }
+
+  @Get()
+  public async buscaCervejas(
+    @Query("page") page: number,
+    @Query("size") size: number,
+  ) {
+    return await this.service.coletaTodasCervejas(page, size);
   }
 }
