@@ -1,49 +1,52 @@
-import fs from "fs";
+import { readFile, writeFile } from "fs/promises";
+import { Injectable, ConflictException } from "@nestjs/common";
 import { Cerveja } from "src/cerveja/cerveja.entity";
 
+@Injectable()
 export class Database {
-  private FILENAME = "./cervejas.file.json";
-  private readCervejas(): Array<Cerveja> {
-    const cervejaTexto = fs.readFileSync(this.FILENAME).toString();
+  private FILENAME = "./src/database/cervejas.file.json";
+  private async readCervejas(): Promise<Cerveja[]> {
+    const cervejaTexto = await readFile(this.FILENAME, "utf-8");
     return JSON.parse(cervejaTexto);
   }
 
   private saveCervejas(cervejas: Array<Cerveja>) {
     const cervejaTexto = JSON.stringify(cervejas);
-    fs.writeFileSync(this.FILENAME, cervejaTexto);
+    writeFile(this.FILENAME, cervejaTexto);
   }
 
-  public getAllCervejas(): Array<Cerveja> {
-    return this.readCervejas();
+  public async getAllCervejas(): Promise<Cerveja[]> {
+    return await this.readCervejas();
   }
 
-  public includeCerveja(cerveja: Cerveja) {
-    const cervejas = this.readCervejas();
-    this.saveCervejas([...cervejas, cerveja]);
+  public async includeCerveja(cerveja: Cerveja) {
+    const cervejas = await this.readCervejas();
+    await this.saveCervejas([...cervejas, cerveja]);
+    return cerveja;
   }
 
-  public findCerveja(nome: string): Array<Cerveja> {
-    const cervejas = this.readCervejas();
-    return cervejas.filter((cerveja) =>
-      cerveja.nome.toLowerCase().includes(nome.toLowerCase()),
+  public async findCerveja(nome: string) {
+    const cervejas = await this.readCervejas();
+    return cervejas.find(
+      (cerveja) => cerveja.nome.toLowerCase() === nome.toLowerCase(),
     );
   }
 
-  public updateCerveja(cervejaNova: Cerveja) {
-    const cervejas = this.readCervejas();
+  // public updateCerveja(cervejaNova: Cerveja) {
+  //   const cervejas = this.readCervejas();
 
-    const cervejasNovas = cervejas.map((cerveja) => {
-      if (cervejaNova.nome.toLowerCase() === cerveja.nome.toLowerCase()) {
-        cerveja.nome = cervejaNova.nome || cerveja.nome;
-        cerveja.descricao = cervejaNova.descricao || cerveja.descricao;
-        cerveja.nomeCervejaria =
-          cervejaNova.nomeCervejaria || cerveja.nomeCervejaria;
-        cerveja.tipo = cervejaNova.tipo || cerveja.tipo;
-      }
-      return cerveja;
-    });
-    if (cervejasNovas) {
-      this.saveCervejas(cervejasNovas);
-    }
-  }
+  //   const cervejasNovas = cervejas.map((cerveja) => {
+  //     if (cervejaNova.nome.toLowerCase() === cerveja.nome.toLowerCase()) {
+  //       cerveja.nome = cervejaNova.nome || cerveja.nome;
+  //       cerveja.descricao = cervejaNova.descricao || cerveja.descricao;
+  //       cerveja.nomeCervejaria =
+  //         cervejaNova.nomeCervejaria || cerveja.nomeCervejaria;
+  //       cerveja.tipo = cervejaNova.tipo || cerveja.tipo;
+  //     }
+  //     return cerveja;
+  //   });
+  //   if (cervejasNovas) {
+  //     this.saveCervejas(cervejasNovas);
+  //   }
+  // }
 }
