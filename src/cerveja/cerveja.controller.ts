@@ -1,4 +1,12 @@
-import { Body, Query, Controller, Post, Get, HttpStatus } from "@nestjs/common";
+import {
+  Body,
+  Query,
+  Param,
+  Controller,
+  Post,
+  Get,
+  HttpStatus,
+} from "@nestjs/common";
 import { NestResponse } from "src/core/http/nest-response";
 import { NestResponseBuilder } from "src/core/http/nest-response-builder";
 import { Cerveja } from "./cerveja.entity";
@@ -27,5 +35,11 @@ export class CervejaController {
     @Query("size") size: number,
   ) {
     return await this.service.coletaTodasCervejas(page, size);
+  }
+
+  @Get(":nomeCerveja")
+  public async buscaCerveja(@Param("nomeCerveja") nomeCerveja: string) {
+    const cerveja = await this.service.coletaCerveja(nomeCerveja);
+    return cerveja;
   }
 }

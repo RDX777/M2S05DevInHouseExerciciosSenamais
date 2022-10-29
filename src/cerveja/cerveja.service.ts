@@ -1,4 +1,8 @@
-import { Injectable, ConflictException } from "@nestjs/common";
+import {
+  Injectable,
+  ConflictException,
+  NotFoundException,
+} from "@nestjs/common";
 import { Database } from "src/database/database";
 import { Cerveja } from "./cerveja.entity";
 
@@ -31,5 +35,16 @@ export class CervejaService {
     }
 
     return listaCervejas.slice(inicio, fim);
+  }
+
+  public async coletaCerveja(nomeCerveja: string) {
+    const cerveja = await this.database.findCerveja(nomeCerveja);
+    if (!cerveja) {
+      throw new NotFoundException({
+        statusCode: 404,
+        message: "Cerveja não encontrada",
+      });
+    }
+    return cerveja;
   }
 }
