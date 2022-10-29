@@ -58,4 +58,8 @@ export class CervejaService {
     }
     return await this.database.updateCerveja(cerveja);
   }
+
+  public async deletarUmaCerveja(nomeCerveja: string) {
+    await this.database.deleteCerveja(nomeCerveja);
+  }
 }

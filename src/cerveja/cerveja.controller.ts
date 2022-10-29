@@ -8,6 +8,7 @@ import {
   Patch,
   Delete,
   HttpStatus,
+  HttpCode,
 } from "@nestjs/common";
 import { NestResponse } from "src/core/http/nest-response";
 import { NestResponseBuilder } from "src/core/http/nest-response-builder";
@@ -53,5 +54,11 @@ export class CervejaController {
       .withHeaders({ Location: `/cervejas/${cervejaeditada.nome}` })
       .withBody(cervejaeditada)
       .build();
+  }
+
+  @Delete(":nomeCerveja")
+  @HttpCode(204)
+  public async apagaCerveja(@Param("nomeCerveja") nomeCerveja: string) {
+    await this.service.deletarUmaCerveja(nomeCerveja);
   }
 }

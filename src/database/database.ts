@@ -1,5 +1,5 @@
 import { readFile, writeFile } from "fs/promises";
-import { Injectable, ConflictException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { Cerveja } from "src/cerveja/cerveja.entity";
 
 @Injectable()
@@ -49,5 +49,15 @@ export class Database {
       this.saveCervejas(cervejasNovas);
     }
     return cervejaNova;
+  }
+
+  public async deleteCerveja(nomeCerveja: string) {
+    const cervejas = await this.readCervejas();
+
+    const cervejasNovas = cervejas.filter((cervejas) => {
+      return cervejas.nome.toLowerCase() !== nomeCerveja.toLowerCase();
+    });
+
+    await this.saveCervejas(cervejasNovas);
   }
 }
