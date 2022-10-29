@@ -5,6 +5,8 @@ import {
   Controller,
   Post,
   Get,
+  Patch,
+  Delete,
   HttpStatus,
 } from "@nestjs/common";
 import { NestResponse } from "src/core/http/nest-response";
@@ -41,5 +43,15 @@ export class CervejaController {
   public async buscaCerveja(@Param("nomeCerveja") nomeCerveja: string) {
     const cerveja = await this.service.coletaCerveja(nomeCerveja);
     return cerveja;
+  }
+
+  @Patch()
+  public async editaCerveja(@Body() cerveja: Cerveja) {
+    const cervejaeditada = await this.service.editarUmaCerveja(cerveja);
+    return new NestResponseBuilder()
+      .withStatus(HttpStatus.OK)
+      .withHeaders({ Location: `/cervejas/${cervejaeditada.nome}` })
+      .withBody(cervejaeditada)
+      .build();
   }
 }

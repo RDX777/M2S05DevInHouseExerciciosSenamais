@@ -32,21 +32,22 @@ export class Database {
     );
   }
 
-  // public updateCerveja(cervejaNova: Cerveja) {
-  //   const cervejas = this.readCervejas();
+  public async updateCerveja(cervejaNova: Cerveja): Promise<Cerveja> {
+    const cervejas = await this.readCervejas();
 
-  //   const cervejasNovas = cervejas.map((cerveja) => {
-  //     if (cervejaNova.nome.toLowerCase() === cerveja.nome.toLowerCase()) {
-  //       cerveja.nome = cervejaNova.nome || cerveja.nome;
-  //       cerveja.descricao = cervejaNova.descricao || cerveja.descricao;
-  //       cerveja.nomeCervejaria =
-  //         cervejaNova.nomeCervejaria || cerveja.nomeCervejaria;
-  //       cerveja.tipo = cervejaNova.tipo || cerveja.tipo;
-  //     }
-  //     return cerveja;
-  //   });
-  //   if (cervejasNovas) {
-  //     this.saveCervejas(cervejasNovas);
-  //   }
-  // }
+    const cervejasNovas = cervejas.map((cerveja) => {
+      if (cervejaNova.nome.toLowerCase() === cerveja.nome.toLowerCase()) {
+        cerveja.nome = cervejaNova.nome || cerveja.nome;
+        cerveja.descricao = cervejaNova.descricao || cerveja.descricao;
+        cerveja.nomeCervejaria =
+          cervejaNova.nomeCervejaria || cerveja.nomeCervejaria;
+        cerveja.tipo = cervejaNova.tipo || cerveja.tipo;
+      }
+      return cerveja;
+    });
+    if (cervejasNovas) {
+      this.saveCervejas(cervejasNovas);
+    }
+    return cervejaNova;
+  }
 }

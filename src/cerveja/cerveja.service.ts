@@ -47,4 +47,15 @@ export class CervejaService {
     }
     return cerveja;
   }
+
+  public async editarUmaCerveja(cerveja: Cerveja) {
+    const cervejaEditada = await this.database.findCerveja(cerveja.nome);
+    if (!cervejaEditada) {
+      throw new NotFoundException({
+        statusCode: 404,
+        message: "Cerveja não encontrada",
+      });
+    }
+    return await this.database.updateCerveja(cerveja);
+  }
 }
